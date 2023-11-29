@@ -1,0 +1,219 @@
+ <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PollCreator</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                background: url('https://png.pngtree.com/background/20210709/original/pngtree-hd-abstract-tech-background-picture-image_578452.jpg'); /* Replace with your background image URL */
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 100vh;
+                background-attachment: fixed;
+            }
+            body, html {
+                overflow-y: auto; /* Enable vertical scrolling */
+            }
+            .page-container {
+                width: 70%;
+                max-width: 400px;
+                background-color: rgba(128, 128, 128, 0.8); /* Transparent grey background */
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                text-align: center; /* Centering the content */
+            }
+    
+            .poll-question {
+                font-size: 18px;
+                margin-bottom: 20px;
+                color: #008CBA; /* Blue color for the question label */
+            }
+    
+            .poll-options {
+                list-style-type: none;
+                padding: 0;
+            }
+    
+            .poll-option {
+                margin-bottom: 15px;
+            }
+    
+            label {
+                display: block;
+                padding: 8px;
+                background-color: #008CBA; /* Blue color for the option labels */
+                color: white;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                width: 40%;
+                margin: auto; /* Centering the labels */
+            }
+    
+            label:hover {
+                background-color: #005684;
+            }
+    
+            .custom-option-input, .custom-question-input {
+                width: calc(100% - 16px); /* Adjusted width for the input areas */
+                padding: 8px;
+                margin-top: 8px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                box-sizing: border-box;
+                resize: vertical;
+            }
+    
+            .add-option-button, .create-poll-button {
+                display: inline-block;
+                padding: 12px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+                text-align: center; /* Centering the text in buttons */
+                margin-top: 10px; /* Added margin for better separation */
+            }
+    
+            .add-option-button:hover, .create-poll-button:hover {
+                background-color: #45a049;
+            }
+    
+            .home-link {
+                display: block;
+                margin-top: 20px;
+                color: #4CAF50;
+                text-decoration: none;
+                font-weight: bold;
+            }
+    
+            .home-link:hover {
+                text-decoration: underline;
+            }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Remove any existing unwanted buttons
+                removeUnwantedButtons();
+            });
+    
+            function removeUnwantedButtons() {
+                const unwantedButtons = document.querySelectorAll('.unwanted-button');
+                unwantedButtons.forEach(button => {
+                    button.parentNode.removeChild(button);
+                });
+            }
+    
+            function createPoll() {
+                removeUnwantedButtons();  // Remove any unwanted buttons before creating a new poll
+                const question = document.getElementById('customQuestion').value;
+                const options = Array.from(document.querySelectorAll('.custom-option-input')).map(input => input.value);
+    
+                // Create a unique ID for the poll (you can use a more sophisticated method)
+                const pollId = Date.now().toString();
+    
+                // Store the poll data in localStorage
+                localStorage.setItem(pollId, JSON.stringify({ question, options }));
+    
+                // Redirect to the "Created Polls" page
+                window.location.href = 'result.html';
+            }
+    
+            let optionCount = 4; // Starting count of options (including the static options)
+    
+            function addOption() {
+                const pollOptions = document.getElementById('pollOptions');
+                
+                if (optionCount <= 10) {
+                    const newOption = document.createElement('li');
+                    newOption.className = 'poll-option';
+                    newOption.innerHTML = `
+                        <label>
+                            <input type="radio" name="vote" value="custom_option_${optionCount}">
+                            <span id="option${optionCount}Text">Option ${optionCount}</span>
+                        </label>
+                        <textarea placeholder="Enter your option" class="custom-option-input" onkeypress="handleKeyPress(event, ${optionCount})"></textarea>
+                    `;
+                    pollOptions.appendChild(newOption);
+                    optionCount++;
+                }
+            }
+    
+            function handleKeyPress(event, optionNumber) {
+                if (event.key === 'Enter') {
+                    const nextOptionNumber = optionNumber + 1;
+                    const nextOption = document.querySelector(`#pollOptions li:nth-child(${nextOptionNumber}) textarea`);
+                    
+                    if (nextOption) {
+                        nextOption.focus();
+                    }
+                }
+            }
+    
+            function submitVote() {
+                // You can customize the functionality as needed for creating the poll.
+                alert("Poll created successfully!");
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+        const homeLink = document.querySelector('.home-link');
+
+        if (homeLink) {
+            homeLink.addEventListener('click', function () {
+                window.location.href = 'home.hmtl';
+            });
+        }
+    });
+        </script>
+    </head>
+    <body>
+    
+    
+        <div class="page-container">
+            <div class="poll-question">
+                <label for="customQuestion">Enter your question:</label>
+                <textarea id="customQuestion" class="custom-question-input" placeholder="E.g., What is your favorite color?" style="color: black;"></textarea>
+            </div>
+            <ul class="poll-options" id="pollOptions">
+                <li class="poll-option">
+                    <label>
+                        <input type="radio" name="vote" value="option1">
+                        <span id="option1Text">Option 1</span>
+                    </label>
+                    <textarea placeholder="Enter your option" class="custom-option-input" onkeypress="handleKeyPress(event, 1)"></textarea>
+                </li>
+                <li class="poll-option">
+                    <label>
+                        <input type="radio" name="vote" value="option2">
+                        <span id="option2Text">Option 2</span>
+                    </label>
+                    <textarea placeholder="Enter your option" class="custom-option-input" onkeypress="handleKeyPress(event, 2)"></textarea>
+                </li>
+                <li class="poll-option">
+                    <label>
+                        <input type="radio" name="vote" value="option3">
+                        <span id="option3Text">Option 3</span>
+                    </label>
+                    <textarea placeholder="Enter your option" class="custom-option-input" onkeypress="handleKeyPress(event, 3)"></textarea>
+                </li>
+                <!-- Additional options will be added here dynamically -->
+            </ul>
+            <button class="add-option-button" onclick="addOption()">Add Option</button>
+            <button class="create-poll-button" onclick="createPoll()">Create Poll</button>
+            <a href="index.html" class="home-link">Go to Homepage</a>
+        </div>
+        
+    
+    </body>
+    </html>
+    
+
+
